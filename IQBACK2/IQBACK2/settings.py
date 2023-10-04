@@ -90,9 +90,9 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
         'NAME': 'iqbd',
-        'USER': 'renafordbt',
-        'PASSWORD': '3FESQMDS8P5O2086$',
-        'HOST': 'backiqback2-server.postgres.database.azure.com',
+        'USER': 'yrosdeurfn',
+        'PASSWORD': 'W2P66Y7I35C6FJ1Z$',
+        'HOST': 'iqbd-server.postgres.database.azure.com',
         'PORT': '5432'
     }
 }
