@@ -636,92 +636,94 @@ class generarCertificadoPDF(generics.CreateAPIView):
 
 class generar_certificado_pdf(generics.CreateAPIView):
     ruta_file = 'clientes/report/'
-    nivel = request.data['nivel']
-    cliente_id = request.data['cliente_id']
-    formularios_saq_id = request.data['formularios_saq_id']
-    versiones_norma_id = request.data['versiones_norma_id']
-    codigo_certificado = request.data['codigo_certificado']
-    fecha_emision = request.data['fecha_emision']
-    fecha_vencimiento = request.data['fecha_vencimiento']
 
-    # Definir un diccionario de reemplazos
-    word_replacements = {
-        '|razon_social|': request.data['razon_social'].upper(),
-        '|nivel|': nivel,
-        '|tipo_cliente|': request.data['tipo_cliente'].upper(),
-        '|version_norma|': request.data['version_norma'].upper(),
-        '|fecha_emision|': fecha_emision.upper(),
-        '|fecha_expiracion|': fecha_vencimiento.upper(),
-        '|codigo_certificado|': codigo_certificado.upper(),
-        '|formulario_saq|': request.data['formulario_saq'].upper(),
-        '|identificacion|': request.data['identificacion'].upper(),
-        '|nombre_comercial|': request.data['nombre_comercial'].upper(),
-        '|direccion|': request.data['direccion'].upper(),
-        '|telefono|': request.data['telefono'].upper(),
-        '|telefono2|': request.data['telefono2'].upper(),
-        '|codigo_postal|': request.data['codigo_postal'].upper(),
-    }
+    def post(self, request, *args, **kwargs):
+        nivel = request.data['nivel']
+        cliente_id = request.data['cliente_id']
+        formularios_saq_id = request.data['formularios_saq_id']
+        versiones_norma_id = request.data['versiones_norma_id']
+        codigo_certificado = request.data['codigo_certificado']
+        fecha_emision = request.data['fecha_emision']
+        fecha_vencimiento = request.data['fecha_vencimiento']
 
-    # Nombre del archivo Word
-    if nivel == '1':
-        file_name = 'certificadonivel1.docx'
-    elif nivel == '2':
-        file_name = 'certificadonivel2.docx'
-    elif nivel == '3':
-        file_name = 'certificadonivel3.docx'
-    elif nivel == '4':
-        file_name = 'certificadonivel4.docx'
-    else:
-        return Response(
-            {
-                'success': False,
-                'status': 400,
-                'mensaje': 'Nivel no válido.',
-            }, 
-            status=status.HTTP_400_BAD_REQUEST
-        )
+        # Definir un diccionario de reemplazos
+        word_replacements = {
+            '|razon_social|': request.data['razon_social'].upper(),
+            '|nivel|': nivel,
+            '|tipo_cliente|': request.data['tipo_cliente'].upper(),
+            '|version_norma|': request.data['version_norma'].upper(),
+            '|fecha_emision|': fecha_emision.upper(),
+            '|fecha_expiracion|': fecha_vencimiento.upper(),
+            '|codigo_certificado|': codigo_certificado.upper(),
+            '|formulario_saq|': request.data['formulario_saq'].upper(),
+            '|identificacion|': request.data['identificacion'].upper(),
+            '|nombre_comercial|': request.data['nombre_comercial'].upper(),
+            '|direccion|': request.data['direccion'].upper(),
+            '|telefono|': request.data['telefono'].upper(),
+            '|telefono2|': request.data['telefono2'].upper(),
+            '|codigo_postal|': request.data['codigo_postal'].upper(),
+        }
 
-    # Ruta completa del archivo Word dentro del proyecto
-    file_path = os.path.join(ruta_file, file_name)
+        # Nombre del archivo Word
+        if nivel == '1':
+            file_name = 'certificadonivel1.docx'
+        elif nivel == '2':
+            file_name = 'certificadonivel2.docx'
+        elif nivel == '3':
+            file_name = 'certificadonivel3.docx'
+        elif nivel == '4':
+            file_name = 'certificadonivel4.docx'
+        else:
+            return Response(
+                {
+                    'success': False,
+                    'status': 400,
+                    'mensaje': 'Nivel no válido.',
+                }, 
+                status=status.HTTP_400_BAD_REQUEST
+            )
 
-    if not os.path.exists(file_path):
-        return Response(
-            {
-                'success': False,
-                'status': 400,
-                'mensaje': 'No se encontró el archivo Word.',
-            }, 
-            status=status.HTTP_400_BAD_REQUEST
-        )
+        # Ruta completa del archivo Word dentro del proyecto
+        file_path = os.path.join(ruta_file, file_name)
 
-    # Crear un nuevo documento Word
-    doc = Document(file_path)
+        if not os.path.exists(file_path):
+            return Response(
+                {
+                    'success': False,
+                    'status': 400,
+                    'mensaje': 'No se encontró el archivo Word.',
+                }, 
+                status=status.HTTP_400_BAD_REQUEST
+            )
 
-    # Realizar reemplazos en el documento Word
-    for paragraph in doc.paragraphs:
-        for old_text, new_text in word_replacements.items():
-            if old_text in paragraph.text:
-                # Reemplazar el texto
-                paragraph.text = paragraph.text.replace(old_text, new_text)
-                # Aplicar formato de fuente
-                for run in paragraph.runs:
-                    run.font.size = Pt(12)  # Tamaño de fuente (ajusta según tus necesidades)
+        # Crear un nuevo documento Word
+        doc = Document(file_path)
 
-    # Ruta para guardar el archivo Word modificado
-    modified_file_path = os.path.join(ruta_file, f'{codigo_certificado}.docx')
+        # Realizar reemplazos en el documento Word
+        for paragraph in doc.paragraphs:
+            for old_text, new_text in word_replacements.items():
+                if old_text in paragraph.text:
+                    # Reemplazar el texto
+                    paragraph.text = paragraph.text.replace(old_text, new_text)
+                    # Aplicar formato de fuente
+                    for run in paragraph.runs:
+                        run.font.size = Pt(12)  # Tamaño de fuente (ajusta según tus necesidades)
 
-    # Guardar el archivo Word modificado
-    doc.save(modified_file_path)
+        # Ruta para guardar el archivo Word modificado
+        modified_file_path = os.path.join(ruta_file, f'{codigo_certificado}.docx')
 
-    # Retorna el archivo Word modificado como respuesta HTTP
-    with open(modified_file_path, 'rb') as file:
-        response = HttpResponse(file.read(), content_type='application/vnd.openxmlformats-officedocument.wordprocessingml.document')
-        response['Content-Disposition'] = f'attachment; filename={codigo_certificado}.docx'
-    
-    # Limpia el archivo Word modificado
-    os.remove(modified_file_path)
+        # Guardar el archivo Word modificado
+        doc.save(modified_file_path)
 
-    return response
+        # Retorna el archivo Word modificado como respuesta HTTP
+        with open(modified_file_path, 'rb') as file:
+            response = HttpResponse(file.read(), content_type='application/vnd.openxmlformats-officedocument.wordprocessingml.document')
+            response['Content-Disposition'] = f'attachment; filename={codigo_certificado}.docx'
+        
+        # Limpia el archivo Word modificado
+        os.remove(modified_file_path)
+
+        return response
 
 
 class DescargarPDFView(APIView):
