@@ -633,33 +633,33 @@ class generarCertificadoPDF(generics.CreateAPIView):
 """
 
 
-@api_view(['POST'])
-def generar_certificado_pdf(request):
+
+class generar_certificado_pdf(generics.CreateAPIView):
     ruta_file = 'clientes/report/'
-    nivel = request.data.get('nivel')
-    cliente_id = request.data.get('cliente_id')
-    formularios_saq_id = request.data.get('formularios_saq_id')
-    versiones_norma_id = request.data.get('versiones_norma_id')
-    codigo_certificado = request.data.get('codigo_certificado')
-    fecha_emision = request.data.get('fecha_emision')
-    fecha_vencimiento = request.data.get('fecha_vencimiento')
+    nivel = request.data['nivel']
+    cliente_id = request.data['cliente_id']
+    formularios_saq_id = request.data['formularios_saq_id']
+    versiones_norma_id = request.data['versiones_norma_id']
+    codigo_certificado = request.data['codigo_certificado']
+    fecha_emision = request.data['fecha_emision']
+    fecha_vencimiento = request.data['fecha_vencimiento']
 
     # Definir un diccionario de reemplazos
     word_replacements = {
-        '|razon_social|': request.data.get('razon_social', '').upper(),
+        '|razon_social|': request.data['razon_social'].upper(),
         '|nivel|': nivel,
-        '|tipo_cliente|': request.data.get('tipo_cliente', '').upper(),
-        '|version_norma|': request.data.get('version_norma', '').upper(),
+        '|tipo_cliente|': request.data['tipo_cliente'].upper(),
+        '|version_norma|': request.data['version_norma'].upper(),
         '|fecha_emision|': fecha_emision.upper(),
         '|fecha_expiracion|': fecha_vencimiento.upper(),
         '|codigo_certificado|': codigo_certificado.upper(),
-        '|formulario_saq|': request.data.get('formulario_saq', '').upper(),
-        '|identificacion|': request.data.get('identificacion', '').upper(),
-        '|nombre_comercial|': request.data.get('nombre_comercial', '').upper(),
-        '|direccion|': request.data.get('direccion', '').upper(),
-        '|telefono|': request.data.get('telefono', '').upper(),
-        '|telefono2|': request.data.get('telefono2', '').upper(),
-        '|codigo_postal|': request.data.get('codigo_postal', '').upper(),
+        '|formulario_saq|': request.data['formulario_saq'].upper(),
+        '|identificacion|': request.data['identificacion'].upper(),
+        '|nombre_comercial|': request.data['nombre_comercial'].upper(),
+        '|direccion|': request.data['direccion'].upper(),
+        '|telefono|': request.data['telefono'].upper(),
+        '|telefono2|': request.data['telefono2'].upper(),
+        '|codigo_postal|': request.data['codigo_postal'].upper(),
     }
 
     # Nombre del archivo Word
