@@ -634,7 +634,7 @@ class generarCertificadoPDF(generics.CreateAPIView):
 
 
 
-class generar_certificado_pdf(generics.CreateAPIView):
+class generarCertificadoPDF(generics.CreateAPIView):
     ruta_file = 'clientes/report/'
 
     def post(self, request, *args, **kwargs):
